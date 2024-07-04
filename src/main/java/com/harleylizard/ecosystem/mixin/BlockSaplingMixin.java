@@ -14,12 +14,11 @@ import java.util.Random;
 @Mixin(BlockSapling.class)
 public final class BlockSaplingMixin {
 
-    @Inject(method = "growTree", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/feature/WorldGenerator;generate(Lnet/minecraft/world/World;Ljava/util/Random;III)Z", shift = At.Shift.AFTER), remap = false)
+    @Inject(method = "growTree", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/feature/WorldGenerator;generate(Lnet/minecraft/world/World;Ljava/util/Random;III)Z", shift = At.Shift.AFTER))
     public void growTree(World world, int x, int y, int z, Random random, CallbackInfo ci) {
         Chunk chunk = world.getChunkFromBlockCoords(x, z);
 
         Ecosystem ecosystem = Ecosystem.getOrCreate(chunk);
-
-        Ecosystem.toClient(chunk, ecosystem);
+        Ecosystem.toClient(chunk, ecosystem, x, y, z);
     }
 }

@@ -3,10 +3,16 @@
   "package": "com.harleylizard.ecosystem.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "BlockSaplingMixin"
+    "BlockDeadBushMixin",
+    "BlockGrassMixin",
+    "BlockMushroomMixin",
+    "BlockSaplingMixin",
+    "BlockTallGrassMixin",
+    "WorldMixin"
   ],
   "client": [
-    "BiomeGenBaseMixin"
+    "ClientBlockClientMixinModifier",
+    "ClientBlockTallClientMixinModifier"
   ],
   "injectors": {
     "defaultRequire": 1

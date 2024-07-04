@@ -1,13 +1,18 @@
 package com.harleylizard.ecosystem;
 
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockBush;
+import net.minecraft.block.BlockGrass;
+import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -16,18 +21,56 @@ public final class Ecosystem {
 
     private final Palette[] palettes = new Palette[16];
 
+    private Ecosystem(Chunk chunk) {
+    }
+
     private Ecosystem() {
     }
 
-    public int getNourishment(int x, int y, int z) {
-        return getPalette(y).getNourishment(x, y, z);
+    public int getNourishment(Chunk chunk, int x, int y, int z) {
+        return getPaletteOrCreate(chunk, y).nourishment[Palette.indexOf(x, y, z)];
     }
 
-    private Palette getPalette(int y) {
+    public int getNourishmentForClient(int x, int y, int z) {
+        Palette palette = palettes[(y & 0xFF) >> 4];
+        if (palette == null) {
+            return 16;
+        }
+        return palette.nourishment[Palette.indexOf(x, y, z)];
+    }
+
+    public boolean takeNourishment(Chunk chunk, int x, int y, int z, int amount) {
+        int[] nourishment = getPaletteOrCreate(chunk, y).nourishment;
+        int i = Palette.indexOf(x, y, z);
+        int j = nourishment[i];
+
+        int taken = Math.max(j - amount, 0);
+        nourishment[i] = taken;
+        return taken > 0;
+    }
+
+    public void addNourishment(Chunk chunk, int x, int y, int z, int amount) {
+        int[] nourishment = getPaletteOrCreate(chunk, y).nourishment;
+        int i = Palette.indexOf(x, y, z);
+        int j = nourishment[i];
+
+        nourishment[i] = Math.min(j + amount, 16);
+    }
+
+    private Palette getPaletteOrCreate(Chunk chunk, int y) {
         int i = (y & 0xFF) >> 4;
         Palette palette = palettes[i];
         if (palette == null) {
             palette = new Palette();
+            ExtendedBlockStorage storage = chunk.getBlockStorageArray()[y >> 4];
+            for (int j = 0; j < 16; j++) for (int k = 0; k < 16; k++) for (int l = 0; l < 16; l++) {
+                Block block = storage.getBlockByExtId(j, k, l);
+
+                if (block instanceof BlockGrass || block instanceof BlockBush || block instanceof BlockLeaves) {
+                    palette.nourishment[Palette.indexOf(j, k, l)] = 16;
+                }
+            }
+
             palettes[i] = palette;
             return palette;
         }
@@ -35,33 +78,27 @@ public final class Ecosystem {
     }
 
     public static Ecosystem getOrCreate(Chunk chunk) {
-        return MAP.computeIfAbsent(chunk, c -> new Ecosystem());
+        return MAP.computeIfAbsent(chunk, Ecosystem::new);
     }
 
     public static Ecosystem get(Chunk chunk) {
         return MAP.get(chunk);
     }
 
-    public static void toClient(Chunk chunk, Ecosystem ecosystem) {
-        int x = chunk.xPosition;
-        int z = chunk.zPosition;
-
+    public static void toClient(Chunk chunk, Ecosystem ecosystem, int x, int y, int z) {
         EcosystemMessage message = new EcosystemMessage();
-        message.x = x;
-        message.y = z;
+        message.x = chunk.xPosition;
+        message.y = chunk.zPosition;
         message.ecosystem = ecosystem;
-        DynamicEcosystem.NETWORK_WRAPPER.sendToAll(message);
+
+        NetworkRegistry.TargetPoint targetPoint = new NetworkRegistry.TargetPoint(chunk.worldObj.getWorldInfo().getDimension(), x, y, z, 50.0D);
+        DynamicEcosystem.NETWORK_WRAPPER.sendToAllAround(message, targetPoint);
     }
 
     public static final class Palette {
         private final int[] nourishment = new int[16 * 16 * 16];
 
         private Palette() {
-            Arrays.fill(nourishment, -1);
-        }
-
-        private int getNourishment(int x, int y, int z) {
-            return nourishment[indexOf(x, y, z)];
         }
 
         private static int indexOf(int x, int y, int z) {

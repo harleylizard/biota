@@ -1,4 +1,5 @@
 import net.minecraftforge.gradle.common.BaseExtension
+import net.minecraftforge.gradle.tasks.user.reobf.ReobfTask
 
 buildscript {
     repositories {
@@ -62,15 +63,6 @@ tasks.getByName("runClient", JavaExec::class) {
     args("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
 }
 
-tasks.jar {
-    manifest {
-        attributes(
-            "TweakClass" to "org.spongepowered.asm.launch.MixinTweaker",
-            "MixinConfigs" to "mixins.${modId}.json"
-        )
-    }
-}
-
 java {
     withSourcesJar()
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -87,6 +79,20 @@ sourceSets {
 val outSrgFile = "${tasks.compileJava.get().temporaryDir}/outSrg.srg"
 val outRefMapFile = "${tasks.compileJava.get().temporaryDir}/$modId.refmap.json"
 
+tasks.jar {
+    manifest {
+        attributes(
+            "TweakClass" to "org.spongepowered.asm.launch.MixinTweaker",
+            "MixinConfigs" to "mixins.${modId}.json"
+        )
+    }
+    from(outRefMapFile)
+}
+
 tasks.withType<JavaCompile> {
-    options.compilerArgs.addAll(listOf("-AreobfSrgFil=$outSrgFile", "-AoutRefMapFile=$outRefMapFile"))
+    options.compilerArgs.addAll(listOf("-AreobfSrgFile=${tasks.getByName("reobf", ReobfTask::class).srg}",  "-AoutSrgFile=$outSrgFile", "-AoutRefMapFile=$outRefMapFile"))
+}
+
+tasks.withType(ReobfTask::class.java) {
+    addExtraSrgFile(outSrgFile)
 }
