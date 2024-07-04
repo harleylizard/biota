@@ -1,0 +1,4 @@
+package com.harleylizard.ecosystem.proxy;
+
+public final class CommonProxy implements Proxy {
+}
