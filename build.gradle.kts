@@ -5,6 +5,9 @@ buildscript {
         mavenCentral()
         maven("http://files.minecraftforge.net/maven") {
             isAllowInsecureProtocol = true
+            metadataSources {
+                artifact()
+            }
         }
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
     }
@@ -28,6 +31,7 @@ val modId = "dynamic-ecosystem"
 project.extensions.getByType(BaseExtension::class.java).apply {
     version = "1.7.10-10.13.4.1614-1.7.10"
     runDir = "run"
+    mappings = "stable_12"
 }
 
 repositories {
@@ -78,4 +82,11 @@ sourceSets {
     main {
         output.setResourcesDir(output.classesDirs.asPath)
     }
+}
+
+val outSrgFile = "${tasks.compileJava.get().temporaryDir}/outSrg.srg"
+val outRefMapFile = "${tasks.compileJava.get().temporaryDir}/$modId.refmap.json"
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.addAll(listOf("-AreobfSrgFil=$outSrgFile", "-AoutRefMapFile=$outRefMapFile"))
 }

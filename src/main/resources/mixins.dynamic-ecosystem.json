@@ -3,8 +3,13 @@
   "package": "com.harleylizard.ecosystem.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BlockSaplingMixin"
+  ],
+  "client": [
+    "BiomeGenBaseMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "refmap": "dynamic-ecosystem.refmap.json"
 }
