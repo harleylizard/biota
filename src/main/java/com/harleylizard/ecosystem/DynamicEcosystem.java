@@ -1,6 +1,10 @@
 package com.harleylizard.ecosystem;
 
 import com.harleylizard.ecosystem.proxy.Proxy;
+import com.harleylizard.ecosystem.world.MutableEcosystem;
+import com.harleylizard.ecosystem.world.message.BiomeMessage;
+import com.harleylizard.ecosystem.world.message.EcosystemMessage;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -8,10 +12,17 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockGrass;
+import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.BlockTallGrass;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ChunkDataEvent;
 
 @Mod(modid = DynamicEcosystem.MOD_ID, version = DynamicEcosystem.VERSION, name = DynamicEcosystem.NAME, dependencies = "required-after:unimixins@[0.1.17,)")
 public final class DynamicEcosystem {
@@ -30,12 +41,24 @@ public final class DynamicEcosystem {
     @Mod.Instance
     public static DynamicEcosystem INSTANCE;
 
+    // Support for other mods.
+    public static boolean THAUMCRAFT;
+    public static boolean BIOMES_O_PLENTY;
+    public static boolean AETHER;
+    public static boolean WITCHERY;
+    public static boolean PLANTS_MEGA_PACK;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         NETWORK_WRAPPER = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
-        NETWORK_WRAPPER.registerMessage(Ecosystem.EcosystemMessage.class, Ecosystem.EcosystemMessage.class, 0, Side.CLIENT);
+
+        int id = 0;
+        NETWORK_WRAPPER.registerMessage(EcosystemMessage.class, EcosystemMessage.class, id++, Side.CLIENT);
+        NETWORK_WRAPPER.registerMessage(BiomeMessage.class, BiomeMessage.class, id++, Side.CLIENT);
 
         MinecraftForge.EVENT_BUS.register(INSTANCE);
+
+        THAUMCRAFT = Loader.isModLoaded("Thaumcraft");
     }
 
     @SubscribeEvent
@@ -46,29 +69,37 @@ public final class DynamicEcosystem {
             int y = event.y;
             int z = event.z;
             Chunk chunk = world.getChunkFromBlockCoords(x, z);
-            Ecosystem ecosystem = Ecosystem.get(chunk);
-            if (ecosystem != null) {
-                ecosystem.takeNourishment(chunk, x, y, z, 16);
-                Ecosystem.toClient(chunk, ecosystem, x, y, z);
+            MutableEcosystem ecosystem = MutableEcosystem.get(chunk, y);
+            ecosystem.removeNourishment(x, y, z, 16);
+            DynamicEcosystemHelper.sendEcosystem(world, x, y, z);
+        }
+    }
+
+    @SubscribeEvent
+    public void loadChunk(ChunkDataEvent.Load event) {
+        if (!event.world.isRemote) {
+            NBTTagCompound data = event.getData();
+            if (data.hasKey("Ecosystem", Constants.NBT.TAG_COMPOUND)) {
+                Chunk chunk = event.getChunk();
+                MutableEcosystem ecosystem = MutableEcosystem.load(chunk, data.getCompoundTag("Ecosystem"));
+                DynamicEcosystem.NETWORK_WRAPPER.sendToAll(new EcosystemMessage(ecosystem, chunk.xPosition, chunk.zPosition));
+                chunk.setChunkModified();
             }
         }
     }
 
-    public static int mix(int x, int  y, float t) {
-        int xR = (x >> 16) & 0xFF;
-        int xG = (x >> 8) & 0xFF;
-        int xB = (x >> 0) & 0xFF;
-        int yR = (y >> 16) & 0xFF;
-        int yG = (y >> 8) & 0xFF;
-        int yB = (y >> 0) & 0xFF;
-
-        int zR = mixInt(xR, yR, t);
-        int zG = mixInt(xG, yG, t);
-        int zB = mixInt(xB, yB, t);
-        return zR << 16 | zG << 8 | zB;
+    @SubscribeEvent
+    public void saveChunk(ChunkDataEvent.Save event) {
+        if (!event.world.isRemote) {
+            Chunk chunk = event.getChunk();
+            MutableEcosystem ecosystem = MutableEcosystem.maybeGet(chunk);
+            if (ecosystem != null) {
+                event.getData().setTag("Ecosystem", ecosystem.getCompoundTag());
+            }
+        }
     }
 
-    private static int mixInt(float x, float y, float t) {
-        return (int) Math.floor(x + t * (y - x)) & 0xFF;
+    public static boolean isPlant(Block block) {
+        return block instanceof BlockGrass || block instanceof BlockTallGrass || block instanceof BlockLeaves;
     }
 }

@@ -5,14 +5,15 @@
   "mixins": [
     "BlockDeadBushMixin",
     "BlockGrassMixin",
+    "BlockLeavesMixin",
     "BlockMushroomMixin",
     "BlockSaplingMixin",
     "BlockTallGrassMixin",
     "WorldMixin"
   ],
   "client": [
-    "ClientBlockClientMixinModifier",
-    "ClientBlockTallClientMixinModifier"
+    "ClientBlockGrassMixin",
+    "ClientBlockTallGrassMixin"
   ],
   "injectors": {
     "defaultRequire": 1
