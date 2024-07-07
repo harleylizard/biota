@@ -1,7 +1,6 @@
-package com.harleylizard.ecosystem;
+package com.harleylizard.ecosystem.world;
 
 import com.google.gson.*;
-import com.harleylizard.ecosystem.world.BiomeInfluence;
 import cpw.mods.fml.common.Loader;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
@@ -15,7 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public final class InfluenceConfig {
+public final class BiomeInfluenceConfig {
     private static final Map<PriorityInfluence, Set<PriorityInfluence>> MAP = new HashMap<>();
 
     private static final JsonDeserializer<PriorityInfluence> JSON_DESERIALIZER = (json, typeOfT, context) -> {
@@ -25,12 +24,8 @@ public final class InfluenceConfig {
         for (JsonElement element1 : jsonObject.getAsJsonArray("blocks")) {
             influences.add(createInfluence(element1));
         }
-        BiomeGenBase biome = getBiome(jsonObject.getAsJsonPrimitive("biome").getAsString());
-        PriorityInfluence priorityInfluence = new PriorityInfluence(Collections.unmodifiableList(influences),
-                biome,
-                Priority.fromString(jsonObject.getAsJsonPrimitive("priority").getAsString()),
-                jsonObject.getAsJsonPrimitive("filter").getAsInt());
 
+        PriorityInfluence priorityInfluence = new PriorityInfluence(Collections.unmodifiableList(influences), getBiome(jsonObject.getAsJsonPrimitive("biome").getAsString()), Priority.fromString(jsonObject.getAsJsonPrimitive("priority").getAsString()), jsonObject.getAsJsonPrimitive("filter").getAsInt());
         if (jsonObject.has("prerequisite-biome")) {
             priorityInfluence.prerequisite = jsonObject.getAsJsonPrimitive("prerequisite-biome").getAsString();
         }
@@ -42,6 +37,9 @@ public final class InfluenceConfig {
 
     static {
         List<String> list = new ArrayList<>();
+        list.add("data/sunflower_plains.json");
+        list.add("data/jungle.json");
+        list.add("data/birch_forest.json");
         list.add("data/forest.json");
         list.add("data/plains.json");
 
@@ -50,7 +48,7 @@ public final class InfluenceConfig {
 
     private final List<PriorityInfluence> list;
 
-    private InfluenceConfig(List<PriorityInfluence> list) {
+    private BiomeInfluenceConfig(List<PriorityInfluence> list) {
         this.list = list;
         for (PriorityInfluence priorityInfluence : list) {
             String prerequisite = priorityInfluence.prerequisite;
@@ -89,7 +87,7 @@ public final class InfluenceConfig {
         return null;
     }
 
-    public static InfluenceConfig createConfig() {
+    public static BiomeInfluenceConfig createConfig() {
         try {
             Path directory = Paths.get("config", "dynamic-ecosystem");
 
@@ -99,7 +97,7 @@ public final class InfluenceConfig {
                 for (String jsonFile : JSON_FILES) {
                     Path path = directory.resolve(jsonFile.substring(jsonFile.lastIndexOf("/") + 1));
 
-                    URL url = InfluenceConfig.class.getClassLoader().getResource(jsonFile);
+                    URL url = BiomeInfluenceConfig.class.getClassLoader().getResource(jsonFile);
                     try (InputStream stream = url.openStream(); OutputStream out = Files.newOutputStream(path)) {
                         int byteRead;
                         while ((byteRead = stream.read()) != -1) {
@@ -119,7 +117,7 @@ public final class InfluenceConfig {
                     }
                 }
             }
-            return new InfluenceConfig(list.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(list));
+            return new BiomeInfluenceConfig(list.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(list));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

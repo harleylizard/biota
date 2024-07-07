@@ -1,6 +1,5 @@
 package com.harleylizard.ecosystem.world;
 
-import com.harleylizard.ecosystem.DynamicEcosystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -37,7 +36,7 @@ public final class ClientEcosystem implements Ecosystem {
             }
 
             float nourishment = Math.min(ecosystem.getNourishment(x, y, z), 16.0F) / 16.0F;
-            return mix(DynamicEcosystem.THAUMCRAFT && world.getBiomeGenForCoords(x, z).biomeName.equals("Tainted Lands") ? 0x6B5689 : 0xEA9F69, vanilla, nourishment);
+            return mix(world.getBiomeGenForCoords(x, z).biomeName.equals("Tainted Lands") ? 0x6B5689 : 0xEA9F69, vanilla, nourishment);
         }
 
         static int mix(int x, int  y, float t) {

@@ -84,11 +84,9 @@ public final class BiomeSapling {
             this.meta = meta;
             this.biomes = biomes;
 
-            if (DynamicEcosystem.THAUMCRAFT) {
-                blacklist.add(193);
-                blacklist.add(194);
-                blacklist.add(195);
-            }
+            blacklist.add(193);
+            blacklist.add(194);
+            blacklist.add(195);
         }
 
         public boolean placeSapling(World world, int x, int y, int z) {

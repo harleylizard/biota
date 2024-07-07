@@ -4,6 +4,7 @@ import com.harleylizard.ecosystem.Direction;
 import com.harleylizard.ecosystem.world.BiomeInfluence;
 import com.harleylizard.ecosystem.world.EcosystemWorld;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockLeavesBase;
 import net.minecraft.init.Blocks;
@@ -83,7 +84,7 @@ public final class BlockGrassMixin {
     private boolean shouldBecomePodzol(World world, int x, int y, int z) {
         int next = y + 1;
         int steps = 0;
-        while (world.getBlock(x, next, z) == Blocks.air) {
+        while (shouldIgnore(world.getBlock(x, next, z))) {
             if (steps > 5) {
                 break;
             }
@@ -92,5 +93,10 @@ public final class BlockGrassMixin {
         }
         Block block = world.getBlock(x, next, z);
         return block instanceof BlockLeavesBase;
+    }
+
+    @Unique
+    private boolean shouldIgnore(Block block) {
+        return block == Blocks.air;
     }
 }

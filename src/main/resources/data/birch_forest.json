@@ -1,0 +1,28 @@
+{
+  "blocks": [
+    {
+      "name": "minecraft:log",
+      "meta": 2,
+      "weight": 2
+    },
+    {
+      "name": "minecraft:leaves",
+      "meta": 2,
+      "weight": 2
+    },
+    {
+      "name": "minecraft:log",
+      "meta": 0,
+      "weight": -1
+    },
+    {
+      "name": "minecraft:leaves",
+      "meta": 0,
+      "weight": -1
+    }
+  ],
+  "prerequisite-biome": "Plains",
+  "biome": "Birch Forest",
+  "filter": 15,
+  "priority": "high"
+}

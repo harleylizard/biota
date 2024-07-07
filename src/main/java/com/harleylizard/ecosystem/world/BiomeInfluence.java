@@ -6,8 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public final class BiomeInfluence {
@@ -17,8 +15,8 @@ public final class BiomeInfluence {
 
     public static void setBiomeFromInfluence(World world, int x, int y, int z) {
         BiomeGenBase biome = DynamicEcosystem.INFLUENCE_CONFIG.get().getBiomeFor(world, x, y, z);
-        if (biome != null) {
-            DynamicEcosystemHelper.setBiome(world, x, z, biome);
+        if (biome != null && world.getBiomeGenForCoords(x, z) != biome) {
+            DynamicEcosystemHelper.setBiome(world, biome, x, y, z);
         }
     }
 
@@ -44,10 +42,6 @@ public final class BiomeInfluence {
             }
         }
         return i;
-    }
-
-    public static List<Influence> listOf(Influence... influences) {
-        return Collections.unmodifiableList(Arrays.asList(influences));
     }
 
     public static Influence influence(Block block, int meta, int weight) {

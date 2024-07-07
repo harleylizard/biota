@@ -13,6 +13,8 @@ public abstract class WorldMixin implements EcosystemWorld {
 
     @Shadow public abstract Chunk getChunkFromBlockCoords(int p_72938_1_, int p_72938_2_);
 
+    @Shadow public abstract void markBlockForRenderUpdate(int p_147479_1_, int p_147479_2_, int p_147479_3_);
+
     @Override
     public int getNourishment(int x, int y, int z) {
         Chunk chunk = getChunkFromBlockCoords(x, z);

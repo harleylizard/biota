@@ -12,8 +12,8 @@ public final class DynamicEcosystemHelper {
     private DynamicEcosystemHelper() {
     }
 
-    public static void setBiome(World world, int x, int z, BiomeGenBase base) {
-        //Utils.setBiomeAt(world, x, z, base);
+    public static void setBiome(World world, BiomeGenBase biome, int x, int y, int z) {
+        DynamicEcosystem.PROXY.setBiome(world, biome, x, y, z);
     }
 
     public static void sendEcosystem(World world, int x, int y, int z) {
@@ -26,8 +26,9 @@ public final class DynamicEcosystemHelper {
                 NetworkRegistry.TargetPoint targetPoint = new NetworkRegistry.TargetPoint(dim, x, y, z, 24.0F);
                 DynamicEcosystem.NETWORK_WRAPPER.sendToAllAround(new EcosystemMessage(ecosystem,
                         chunk.xPosition,
-                        chunk.zPosition
-                        ), targetPoint);
+                        chunk.zPosition,
+                        x, y, z
+                ), targetPoint);
             }
         }
     }

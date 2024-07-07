@@ -1,10 +1,10 @@
 package com.harleylizard.ecosystem;
 
 import com.harleylizard.ecosystem.proxy.Proxy;
+import com.harleylizard.ecosystem.world.BiomeInfluenceConfig;
 import com.harleylizard.ecosystem.world.MutableEcosystem;
-import com.harleylizard.ecosystem.world.message.BiomeMessage;
+import com.harleylizard.ecosystem.world.message.SetBiomeMessage;
 import com.harleylizard.ecosystem.world.message.EcosystemMessage;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -44,14 +44,7 @@ public final class DynamicEcosystem {
     @Mod.Instance
     public static DynamicEcosystem INSTANCE;
 
-    // Support for other mods.
-    public static boolean THAUMCRAFT;
-    public static boolean BIOMES_O_PLENTY;
-    public static boolean AETHER;
-    public static boolean WITCHERY;
-    public static boolean PLANTS_MEGA_PACK;
-
-    public static final Supplier<InfluenceConfig> INFLUENCE_CONFIG = MemorableSupplier.of(InfluenceConfig::createConfig);
+    public static final Supplier<BiomeInfluenceConfig> INFLUENCE_CONFIG = MemorableSupplier.of(BiomeInfluenceConfig::createConfig);
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -59,12 +52,9 @@ public final class DynamicEcosystem {
 
         int id = 0;
         NETWORK_WRAPPER.registerMessage(EcosystemMessage.class, EcosystemMessage.class, id++, Side.CLIENT);
-        NETWORK_WRAPPER.registerMessage(BiomeMessage.class, BiomeMessage.class, id++, Side.CLIENT);
+        NETWORK_WRAPPER.registerMessage(SetBiomeMessage.class, SetBiomeMessage.class, id++, Side.CLIENT);
 
         MinecraftForge.EVENT_BUS.register(INSTANCE);
-
-        THAUMCRAFT = Loader.isModLoaded("Thaumcraft");
-        BIOMES_O_PLENTY = Loader.isModLoaded("BiomesOPlenty");
     }
 
     @Mod.EventHandler
@@ -93,7 +83,6 @@ public final class DynamicEcosystem {
             if (data.hasKey("Ecosystem", Constants.NBT.TAG_COMPOUND)) {
                 Chunk chunk = event.getChunk();
                 MutableEcosystem ecosystem = MutableEcosystem.load(chunk, data.getCompoundTag("Ecosystem"));
-                DynamicEcosystem.NETWORK_WRAPPER.sendToAll(new EcosystemMessage(ecosystem, chunk.xPosition, chunk.zPosition));
                 chunk.setChunkModified();
             }
         }
