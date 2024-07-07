@@ -1,6 +1,7 @@
 package com.harleylizard.ecosystem.mixin;
 
 import com.harleylizard.ecosystem.world.EcosystemWorld;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.block.BlockSapling;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;

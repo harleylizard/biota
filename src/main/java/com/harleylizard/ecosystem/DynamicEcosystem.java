@@ -7,15 +7,16 @@ import com.harleylizard.ecosystem.world.message.EcosystemMessage;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockLeaves;
-import net.minecraft.block.BlockTallGrass;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -23,6 +24,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
+
+import java.util.function.Supplier;
 
 @Mod(modid = DynamicEcosystem.MOD_ID, version = DynamicEcosystem.VERSION, name = DynamicEcosystem.NAME, dependencies = "required-after:unimixins@[0.1.17,)")
 public final class DynamicEcosystem {
@@ -48,6 +51,8 @@ public final class DynamicEcosystem {
     public static boolean WITCHERY;
     public static boolean PLANTS_MEGA_PACK;
 
+    public static final Supplier<InfluenceConfig> INFLUENCE_CONFIG = MemorableSupplier.of(InfluenceConfig::createConfig);
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         NETWORK_WRAPPER = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
@@ -59,6 +64,12 @@ public final class DynamicEcosystem {
         MinecraftForge.EVENT_BUS.register(INSTANCE);
 
         THAUMCRAFT = Loader.isModLoaded("Thaumcraft");
+        BIOMES_O_PLENTY = Loader.isModLoaded("BiomesOPlenty");
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+
     }
 
     @SubscribeEvent
@@ -100,6 +111,6 @@ public final class DynamicEcosystem {
     }
 
     public static boolean isPlant(Block block) {
-        return block instanceof BlockGrass || block instanceof BlockTallGrass || block instanceof BlockLeaves;
+        return block instanceof BlockGrass || block instanceof BlockLeaves || block instanceof BlockBush;
     }
 }

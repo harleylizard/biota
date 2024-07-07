@@ -5,9 +5,11 @@ import com.harleylizard.ecosystem.world.BiomeInfluence;
 import com.harleylizard.ecosystem.world.EcosystemWorld;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGrass;
+import net.minecraft.block.BlockLeavesBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -42,7 +44,8 @@ public final class BlockGrassMixin {
         if (!worldIn.isRemote) {
             int nourishment = ((EcosystemWorld) worldIn).getNourishment(x, y, z);
             if (nourishment == 0 && random.nextInt(10) == 0) {
-                worldIn.setBlock(x, y, z, Blocks.dirt, 0, 3);
+                boolean podzol = shouldBecomePodzol(worldIn, x, y, z);
+                worldIn.setBlock(x, y, z, Blocks.dirt, podzol ? 2 : 0, 4);
                 ci.cancel();
                 return;
             }
@@ -74,5 +77,20 @@ public final class BlockGrassMixin {
                 }
             }
         }
+    }
+
+    @Unique
+    private boolean shouldBecomePodzol(World world, int x, int y, int z) {
+        int next = y + 1;
+        int steps = 0;
+        while (world.getBlock(x, next, z) == Blocks.air) {
+            if (steps > 5) {
+                break;
+            }
+            next++;
+            steps++;
+        }
+        Block block = world.getBlock(x, next, z);
+        return block instanceof BlockLeavesBase;
     }
 }

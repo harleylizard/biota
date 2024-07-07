@@ -6,7 +6,6 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
-import thaumcraft.common.lib.utils.Utils;
 
 public final class DynamicEcosystemHelper {
 
@@ -14,7 +13,7 @@ public final class DynamicEcosystemHelper {
     }
 
     public static void setBiome(World world, int x, int z, BiomeGenBase base) {
-        Utils.setBiomeAt(world, x, z, base);
+        //Utils.setBiomeAt(world, x, z, base);
     }
 
     public static void sendEcosystem(World world, int x, int y, int z) {

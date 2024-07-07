@@ -44,10 +44,6 @@ repositories {
 }
 
 dependencies {
-    implementation(files("libs/Thaumcraft-deobf-1.7.10-4.2.3.5.jar"))
-    implementation(files("libs/Buables-deobf-1.7.10-1.0.1.10.jar"))
-    implementation(files("libs/plantmegapack-4.23-1.7.10-1448"))
-
     implementation(files("libs/+unimixins-all-1.7.10-0.1.17-dev.jar"))
     annotationProcessor(files("libs/+unimixins-all-1.7.10-0.1.17-dev.jar"))
 

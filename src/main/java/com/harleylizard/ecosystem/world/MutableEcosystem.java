@@ -96,20 +96,22 @@ public final class MutableEcosystem implements Ecosystem {
         if (palette == null) {
             palette = new Palette();
             ExtendedBlockStorage storage = chunk.getBlockStorageArray()[i];
-            for (int j = 0; j < 16; j++) for (int k = 0; k < 16; k++) for (int l = 0; l < 16; l++) {
-                Block block = storage.getBlockByExtId(j, k, l);
+            if (storage != null) {
+                for (int j = 0; j < 16; j++) for (int k = 0; k < 16; k++) for (int l = 0; l < 16; l++) {
+                    Block block = storage.getBlockByExtId(j & 0x0F, k, l & 0x0F);
 
-                if (DynamicEcosystem.isPlant(block)) {
-                    palette.nourishment[Palette.indexOf(j, k, l)] = 16;
+                    if (DynamicEcosystem.isPlant(block)) {
+                        palette.nourishment[Palette.indexOf(j, k, l)] = 16;
+                    }
                 }
+                palettes[i] = palette;
             }
-            palettes[i] = palette;
         }
         return this;
     }
 
     public static MutableEcosystem get(Chunk chunk, int y) {
-        return MAP.computeIfAbsent(chunk, MutableEcosystem::new).spawnPalette(chunk, y);
+        return chunk == null ? null : MAP.computeIfAbsent(chunk, MutableEcosystem::new).spawnPalette(chunk, y);
     }
 
     public static MutableEcosystem maybeGet(Chunk chunk) {

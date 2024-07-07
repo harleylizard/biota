@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-import thaumcraft.common.config.Config;
 
 import java.util.*;
 
@@ -86,9 +85,9 @@ public final class BiomeSapling {
             this.biomes = biomes;
 
             if (DynamicEcosystem.THAUMCRAFT) {
-                blacklist.add(Config.biomeTaintID);
-                blacklist.add(Config.biomeEerieID);
-                blacklist.add(Config.biomeEldritchID);
+                blacklist.add(193);
+                blacklist.add(194);
+                blacklist.add(195);
             }
         }
 
