@@ -2,21 +2,30 @@
   "blocks": [
     {
       "name": "minecraft:grass",
-      "meta": 0,
+      "meta": [0],
       "weight": 1
     },
     {
       "name": "minecraft:tallgrass",
-      "meta": 1,
+      "meta": [1],
       "weight": 1
     },
     {
       "name": "minecraft:deadbush",
-      "meta": 0,
+      "meta": [0],
       "weight": -2
     }
   ],
   "biome": "Plains",
   "filter": 25,
-  "priority": "low"
+  "priority": "low",
+  "blacklist": [
+    {
+      "mod-id": "Thaumcraft",
+      "biomes": [
+        "Tainted Lands",
+        "Eerie"
+      ]
+    }
+  ]
 }

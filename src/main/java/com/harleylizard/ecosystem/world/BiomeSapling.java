@@ -1,6 +1,5 @@
 package com.harleylizard.ecosystem.world;
 
-import com.harleylizard.ecosystem.DynamicEcosystem;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;

@@ -2,17 +2,26 @@
   "blocks": [
     {
       "name": "minecraft:log",
-      "meta": 3,
+      "meta": [3],
       "weight": 2
     },
     {
       "name": "minecraft:leaves",
-      "meta": 3,
+      "meta": [3],
       "weight": 2
     }
   ],
   "prerequisite-biome": "Plains",
   "biome": "Jungle",
   "filter": 15,
-  "priority": "high"
+  "priority": "high",
+  "blacklist": [
+    {
+      "mod-id": "Thaumcraft",
+      "biomes": [
+        "Tainted Lands",
+        "Eerie"
+      ]
+    }
+  ]
 }

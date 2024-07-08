@@ -2,12 +2,21 @@
   "blocks": [
     {
       "name": "minecraft:double_plant",
-      "meta": 0,
+      "meta": [0],
       "weight": 3
     }
   ],
   "prerequisite-biome": "Plains",
   "biome": "Sunflower Plains",
   "filter": 10,
-  "priority": "low"
+  "priority": "low",
+  "blacklist": [
+    {
+      "mod-id": "Thaumcraft",
+      "biomes": [
+        "Tainted Lands",
+        "Eerie"
+      ]
+    }
+  ]
 }

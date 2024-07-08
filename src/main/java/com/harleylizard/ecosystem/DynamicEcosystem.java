@@ -1,10 +1,11 @@
 package com.harleylizard.ecosystem;
 
+import com.harleylizard.ecosystem.config.Influences;
+import com.harleylizard.ecosystem.config.SaplingInfos;
 import com.harleylizard.ecosystem.proxy.Proxy;
-import com.harleylizard.ecosystem.world.BiomeInfluenceConfig;
 import com.harleylizard.ecosystem.world.MutableEcosystem;
-import com.harleylizard.ecosystem.world.message.SetBiomeMessage;
 import com.harleylizard.ecosystem.world.message.EcosystemMessage;
+import com.harleylizard.ecosystem.world.message.SetBiomeMessage;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -33,6 +34,9 @@ public final class DynamicEcosystem {
     public static final String VERSION = "1.0-SNAPSHOT";
     public static final String NAME = "Dynamic Ecosystem";
 
+    public static final Supplier<Influences> INFLUENCES = MemorableSupplier.of(Influences::createFromJson);
+    public static final Supplier<SaplingInfos> SAPLING_INFOS = null;
+
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
 
     @SidedProxy(
@@ -43,8 +47,6 @@ public final class DynamicEcosystem {
 
     @Mod.Instance
     public static DynamicEcosystem INSTANCE;
-
-    public static final Supplier<BiomeInfluenceConfig> INFLUENCE_CONFIG = MemorableSupplier.of(BiomeInfluenceConfig::createConfig);
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {

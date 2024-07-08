@@ -1,0 +1,27 @@
+{
+  "item": {
+    "name": "minecraft:sapling",
+    "meta": 2
+  },
+  "place-from": {
+    "block": "minecraft:leaves",
+    "meta": [
+
+    ]
+  },
+  "native-to": [
+    "Birch Forest",
+    "Birch Forest Hills",
+    "Forest",
+    "Forest Hills"
+  ],
+  "blacklist": [
+    {
+      "mod-id": "Thaumcraft",
+      "biomes": [
+        "Tainted Lands",
+        "Eerie"
+      ]
+    }
+  ]
+}

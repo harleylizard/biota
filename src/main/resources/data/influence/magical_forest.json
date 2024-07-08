@@ -1,0 +1,22 @@
+{
+  "mod-id": "Thaumcraft",
+  "blocks": [
+    {
+      "name": "Thaumcraft:blockCustomPlant",
+      "meta": [2],
+      "weight": 3
+    }
+  ],
+  "biome": "Magical Forest",
+  "filter": 12,
+  "priority": "low",
+  "blacklist": [
+    {
+      "mod-id": "Thaumcraft",
+      "biomes": [
+        "Tainted Lands",
+        "Eerie"
+      ]
+    }
+  ]
+}

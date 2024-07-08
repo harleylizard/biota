@@ -1,10 +1,9 @@
 package com.harleylizard.ecosystem.mixin;
 
 import com.harleylizard.ecosystem.Direction;
-import com.harleylizard.ecosystem.world.BiomeInfluence;
+import com.harleylizard.ecosystem.DynamicEcosystemHelper;
 import com.harleylizard.ecosystem.world.EcosystemWorld;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockLeavesBase;
 import net.minecraft.init.Blocks;
@@ -71,7 +70,7 @@ public final class BlockGrassMixin {
                             ((EcosystemWorld) worldIn).addNourishment(i, y, j, 1);
 
                             if (random.nextInt(5) == 0) {
-                                BiomeInfluence.setBiomeFromInfluence(worldIn, x, y, z);
+                                DynamicEcosystemHelper.setBiomeFromInfluence(worldIn, x, y, z);
                             }
                         }
                     }

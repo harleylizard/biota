@@ -1,5 +1,6 @@
 package com.harleylizard.ecosystem;
 
+import com.harleylizard.ecosystem.config.Influence;
 import com.harleylizard.ecosystem.world.MutableEcosystem;
 import com.harleylizard.ecosystem.world.message.EcosystemMessage;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -10,6 +11,16 @@ import net.minecraft.world.chunk.Chunk;
 public final class DynamicEcosystemHelper {
 
     private DynamicEcosystemHelper() {
+    }
+
+    public static void setBiomeFromInfluence(World world, int x, int y, int z) {
+        Influence influence = DynamicEcosystem.INFLUENCES.get().getInfluence(world, x, y, z);
+        if (influence != null) {
+            BiomeGenBase biome = influence.getBiome();
+            if (world.getBiomeGenForCoords(x, z) != biome) {
+                setBiome(world, biome, x, y, z);
+            }
+        }
     }
 
     public static void setBiome(World world, BiomeGenBase biome, int x, int y, int z) {
