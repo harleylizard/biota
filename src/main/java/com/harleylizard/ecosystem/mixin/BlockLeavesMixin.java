@@ -15,18 +15,18 @@ public abstract class BlockLeavesMixin {
 
     @Inject(method = "updateTick", at = @At("HEAD"))
     public void updateTick(World worldIn, int x, int y, int z, Random random, CallbackInfo ci) {
-        if (!worldIn.isRemote && random.nextInt(2400) == 0) {
+        if (!worldIn.isRemote && random.nextInt(100) == 0) {
             BiomeSapling.SaplingInfo info = BiomeSapling.getSaplingInfo(worldIn.getBlockMetadata(x, y, z) & 3);
             if (info != null) {
                 int range = 5;
                 for (int i = -range; i < range; i++) for (int j = -range; j < range; j++) {
-                    if (random.nextInt(25) == 0) {
+                    if (random.nextInt(10) == 0) {
                         int k = x + i;
                         int l = z + j;
 
                         int height = worldIn.getHeightValue(k, l);
-                        if (BiomeSapling.canSpread(worldIn, info, k, height + 1, l, random)) {
-                            info.placeSapling(worldIn, k, height + 1, l);
+                        if (BiomeSapling.canSpread(worldIn, info, k, height, l, random)) {
+                            info.placeSapling(worldIn, k, height, l);
                             break;
                         }
                     }

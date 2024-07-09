@@ -23,6 +23,8 @@ public interface Proxy {
         if (!world.isRemote) {
             NetworkRegistry.TargetPoint targetPoint = new NetworkRegistry.TargetPoint(world.getWorldInfo().getDimension(), x, y, z, 24.0F);
             DynamicEcosystem.NETWORK_WRAPPER.sendToAllAround(new SetBiomeMessage(biome, x, y, z), targetPoint);
+        } else {
+            world.markBlockForRenderUpdate(x, y, z);
         }
     }
 }

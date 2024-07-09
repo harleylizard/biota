@@ -1,6 +1,7 @@
 package com.harleylizard.ecosystem.world;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockSapling;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -89,7 +90,17 @@ public final class BiomeSapling {
         }
 
         public boolean placeSapling(World world, int x, int y, int z) {
-            return world.setBlock(x, y, z, block, meta, 4);
+            int range = 5;
+            int nearby = 0;
+            for (int j = -range; j <= range; j++) for (int k = -range; k <= range; k++) for (int l = -range; l <= range; l++) {
+                if (world.getBlock(x + j, y + k, z + l) instanceof BlockSapling) {
+                    nearby++;
+                }
+            }
+            if (nearby == 0 && world.isAirBlock(x, y, z)) {
+                return world.setBlock(x, y, z, block, meta, 3);
+            }
+            return false;
         }
     }
 }

@@ -7,15 +7,17 @@
       "weight": 3
     }
   ],
+  "prerequisite-biome": "Plains",
   "biome": "Magical Forest",
   "filter": 12,
-  "priority": "low",
+  "priority": "highest",
   "blacklist": [
     {
       "mod-id": "Thaumcraft",
       "biomes": [
-        "Tainted Lands",
-        "Eerie"
+        "Tainted Land",
+        "Eerie",
+        "Eldritch"
       ]
     }
   ]

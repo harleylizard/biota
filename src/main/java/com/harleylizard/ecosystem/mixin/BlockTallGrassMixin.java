@@ -30,22 +30,9 @@ public final class BlockTallGrassMixin extends Block {
                 return;
             }
             if (random.nextInt(10) == 0) {
-                int range = 3;
-
-                int v = 1;
-                for (int j = -range; j < range; j++) for (int k = -range; k < range; k++) for (int l = -range; l < range; l++) {
-                    int m = x + j;
-                    int n = y + k;
-                    int i = z + l;
-
-                    if (worldIn.getBlock(m, n, i) instanceof BlockTallGrass && random.nextInt(5) == 0) {
-                        v++;
-                    }
-                }
                 float rainfall = worldIn.getBiomeGenForCoords(x, z).rainfall;
-                ((EcosystemWorld) worldIn).removeNourishment(x, y, z, Math.min(v, !worldIn.canBlockSeeTheSky(x, y + 1, z) ? 12 : rainfall == 0.0F ? 8 : rainfall < 0.5F ? 4 : 1));
+                ((EcosystemWorld) worldIn).removeNourishment(x, y, z, !worldIn.canBlockSeeTheSky(x, y + 1, z) ? 4 : rainfall == 0.0F ? 8 : rainfall < 0.5F ? 4 : 1);
             }
-
             if (worldIn.canBlockSeeTheSky(x, y + 1, z) && random.nextInt(5) == 0) {
                 ((EcosystemWorld) worldIn).addNourishment(x, y - 1, z, worldIn.isRainingAt(x, y + 1, z) ? 8 : 4);
             }

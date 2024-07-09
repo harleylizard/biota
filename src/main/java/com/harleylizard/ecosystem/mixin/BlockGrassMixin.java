@@ -65,7 +65,7 @@ public final class BlockGrassMixin {
 
                     if (worldIn.getBlock(i, y, j) == Blocks.grass) {
                         int comparing = ((EcosystemWorld) worldIn).getNourishment(i, y, j);
-                        if (nourishment > comparing) {
+                        if (nourishment - 1 > comparing) {
                             ((EcosystemWorld) worldIn).removeNourishment(x, y, z, 1);
                             ((EcosystemWorld) worldIn).addNourishment(i, y, j, 1);
 

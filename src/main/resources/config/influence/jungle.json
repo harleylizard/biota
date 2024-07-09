@@ -19,8 +19,9 @@
     {
       "mod-id": "Thaumcraft",
       "biomes": [
-        "Tainted Lands",
-        "Eerie"
+        "Tainted Land",
+        "Eerie",
+        "Eldritch"
       ]
     }
   ]

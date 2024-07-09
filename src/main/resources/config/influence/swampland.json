@@ -1,0 +1,28 @@
+{
+  "blocks": [
+    {
+      "name": "minecraft:waterlily",
+      "meta": [0],
+      "weight": 3
+    },
+    {
+      "name": "minecraft:red_flower",
+      "meta": [1],
+      "weight": 3
+    }
+  ],
+  "prerequisite-biome": "Plains",
+  "biome": "Swampland",
+  "filter": 10,
+  "priority": "high",
+  "blacklist": [
+    {
+      "mod-id": "Thaumcraft",
+      "biomes": [
+        "Tainted Land",
+        "Eerie",
+        "Eldritch"
+      ]
+    }
+  ]
+}

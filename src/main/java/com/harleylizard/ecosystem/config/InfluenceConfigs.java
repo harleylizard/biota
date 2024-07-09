@@ -13,17 +13,20 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
-public final class Influences {
+public final class InfluenceConfigs {
     private static final List<String> PATHS;
 
     static {
         List<String> list = new ArrayList<>();
-        list.add("data/influence/sunflower_plains.json");
-        list.add("data/influence/jungle.json");
-        list.add("data/influence/birch_forest.json");
-        list.add("data/influence/forest.json");
-        list.add("data/influence/plains.json");
-        list.add("data/influence/magical_forest.json");
+        list.add("config/influence/swampland.json");
+        list.add("config/influence/taiga.json");
+        list.add("config/influence/sunflower_plains.json");
+        list.add("config/influence/jungle.json");
+        list.add("config/influence/birch_forest.json");
+        list.add("config/influence/forest.json");
+        list.add("config/influence/plains.json");
+        list.add("config/influence/magical_forest.json");
+        list.add("config/influence/maple_woods.json");
 
         PATHS = Collections.unmodifiableList(list);
     }
@@ -31,7 +34,7 @@ public final class Influences {
     private final List<Influence> influences;
     private final Map<Influence, Set<Influence>> hierarchy;
 
-    private Influences(List<Influence> influences, Map<Influence, Set<Influence>> hierarchy) {
+    private InfluenceConfigs(List<Influence> influences, Map<Influence, Set<Influence>> hierarchy) {
         this.influences = influences;
         this.hierarchy = hierarchy;
     }
@@ -52,31 +55,23 @@ public final class Influences {
         return null;
     }
 
-    public static Influences createFromJson() {
+    public static InfluenceConfigs createFromJson() {
         try {
-            Path path = Paths.get("config", "dynamic-ecosystems/influence");
-            List<Influence> list = new ArrayList<>();
-            if (!Files.isDirectory(path)) {
-                Files.createDirectories(path);
-                for (String jsonFile : PATHS) {
-                    Path jsonFilePath = path.resolve(jsonFile.substring(jsonFile.lastIndexOf("/") + 1));
+            Path path = Paths.get("config", "dynamic-ecosystems");
 
-                    URL url = requireNonNull(Influences.class.getClassLoader().getResource(jsonFile));
-                    try (InputStream stream = url.openStream(); OutputStream out = Files.newOutputStream(jsonFilePath)) {
-                        int byteRead;
-                        while ((byteRead = stream.read()) != -1) {
-                            out.write(byteRead);
-                        }
-                    }
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
-                        append(reader, list);
-                    }
-                }
-            } else {
+            List<Influence> list = new ArrayList<>();
+            for (String jsonFile : PATHS) {
+                validateInfluence(path, jsonFile);
+            }
+            path = path.resolve("influence");
+            if (Files.isDirectory(path)) {
                 try (DirectoryStream<Path> stream = Files.newDirectoryStream(path, path1 -> path1.toString().endsWith(".json"))) {
                     for (Path path1 : stream) {
                         try (BufferedReader reader = Files.newBufferedReader(path1)) {
-                            append(reader, list);
+                            Influence influence = Influence.GSON.fromJson(reader, Influence.class);
+                            if (influence != null) {
+                                list.add(influence);
+                            }
                         }
                     }
                 }
@@ -104,16 +99,27 @@ public final class Influences {
                     }
                 }
             }
-            return new Influences(Collections.unmodifiableList(list), Collections.unmodifiableMap(map));
+            return new InfluenceConfigs(Collections.unmodifiableList(list), Collections.unmodifiableMap(map));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void append(BufferedReader reader, List<Influence> list) {
-        Influence influence = Influence.GSON.fromJson(reader, Influence.class);
-        if (influence != null) {
-            list.add(influence);
+    private static void validateInfluence(Path path, String jsonFile) throws IOException {
+        path = path.resolve(jsonFile.substring(jsonFile.indexOf("/") + 1));
+        if (!Files.exists(path)) {
+            Path parent = path.getParent();
+            if (!Files.isDirectory(path)) {
+                Files.createDirectories(parent);
+            }
+
+            URL url = requireNonNull(InfluenceConfigs.class.getClassLoader().getResource(jsonFile));
+            try (InputStream stream = new BufferedInputStream(url.openStream()); OutputStream out = Files.newOutputStream(path)) {
+                int byteRead;
+                while ((byteRead = stream.read()) != -1) {
+                    out.write(byteRead);
+                }
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ public final class DynamicEcosystemHelper {
     }
 
     public static void setBiomeFromInfluence(World world, int x, int y, int z) {
-        Influence influence = DynamicEcosystem.INFLUENCES.get().getInfluence(world, x, y, z);
+        Influence influence = DynamicEcosystem.INFLUENCE_CONFIGS.get().getInfluence(world, x, y, z);
         if (influence != null) {
             BiomeGenBase biome = influence.getBiome();
             if (world.getBiomeGenForCoords(x, z) != biome) {

@@ -1,0 +1,27 @@
+{
+  "mod-id": "BiomesOPlenty",
+  "blocks": [
+    {
+      "name": "BiomesOPlenty:leaves3",
+      "meta": [
+        10,
+        2
+      ],
+      "weight": 4
+    }
+  ],
+  "prerequisite-biome": "Plains",
+  "biome": "Maple Woods",
+  "filter": 9,
+  "priority": "highest",
+  "blacklist": [
+    {
+      "mod-id": "Thaumcraft",
+      "biomes": [
+        "Tainted Land",
+        "Eerie",
+        "Eldritch"
+      ]
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 package com.harleylizard.ecosystem.config;
 
 import com.google.gson.*;
+import com.harleylizard.ecosystem.config.blocklist.WeightedBlockList;
 import cpw.mods.fml.common.Loader;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
@@ -9,7 +10,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
 public final class Influence implements Comparable<Influence> {
     private static final JsonDeserializer<Influence> JSON_DESERIALIZER = (json, typeOfT, context) -> {
@@ -80,7 +80,7 @@ public final class Influence implements Comparable<Influence> {
 
                 for (WeightedBlockList weightedBlockList : list) {
                     if (weightedBlockList.test(BlockWithMeta.of(block, meta))) {
-                        i += weightedBlockList.weight;
+                        i += weightedBlockList.getWeight();
                     }
                 }
             }
@@ -124,42 +124,6 @@ public final class Influence implements Comparable<Influence> {
                 case "highest": return HIGHEST;
                 default: throw new RuntimeException("Unknown priority " + name);
             }
-        }
-    }
-
-    public static final class WeightedBlockList implements Predicate<BlockWithMeta> {
-        private static final JsonDeserializer<WeightedBlockList> JSON_DESERIALIZER = (json, typeOfT, context) -> {
-            JsonObject jsonObject = json.getAsJsonObject();
-
-            String name = jsonObject.getAsJsonPrimitive("name").getAsString();
-            Block block = Block.getBlockFromName(name);
-            if (block == null) {
-                throw new JsonIOException("Failed to get block named " + name);
-            }
-
-            List<BlockWithMeta> list1 = new ArrayList<>();
-            for (JsonElement element : jsonObject.getAsJsonArray("meta")) {
-                list1.add(BlockWithMeta.of(block, element.getAsInt()));
-            }
-            return new WeightedBlockList(Collections.unmodifiableList(list1), jsonObject.getAsJsonPrimitive("weight").getAsInt());
-        };
-
-        private final List<BlockWithMeta> list;
-        private final int weight;
-
-        private WeightedBlockList(List<BlockWithMeta> list, int weight) {
-            this.list = list;
-            this.weight = weight;
-        }
-
-        @Override
-        public boolean test(BlockWithMeta blockWithMeta) {
-            for (BlockWithMeta blockWithMeta1 : list) {
-                if (blockWithMeta1.test(blockWithMeta)) {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

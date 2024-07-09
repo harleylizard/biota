@@ -1,14 +1,13 @@
 package com.harleylizard.ecosystem;
 
-import com.harleylizard.ecosystem.config.Influences;
-import com.harleylizard.ecosystem.config.SaplingInfos;
+import com.harleylizard.ecosystem.config.InfluenceConfigs;
+import com.harleylizard.ecosystem.config.SaplingInfoConfigs;
 import com.harleylizard.ecosystem.proxy.Proxy;
 import com.harleylizard.ecosystem.world.MutableEcosystem;
 import com.harleylizard.ecosystem.world.message.EcosystemMessage;
 import com.harleylizard.ecosystem.world.message.SetBiomeMessage;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -34,8 +33,8 @@ public final class DynamicEcosystem {
     public static final String VERSION = "1.0-SNAPSHOT";
     public static final String NAME = "Dynamic Ecosystem";
 
-    public static final Supplier<Influences> INFLUENCES = MemorableSupplier.of(Influences::createFromJson);
-    public static final Supplier<SaplingInfos> SAPLING_INFOS = null;
+    public static final Supplier<InfluenceConfigs> INFLUENCE_CONFIGS = MemorableSupplier.of(InfluenceConfigs::createFromJson);
+    public static final Supplier<SaplingInfoConfigs> SAPLING_INFO_CONFIGS = MemorableSupplier.of(SaplingInfoConfigs::createFromJson);
 
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
 
@@ -57,11 +56,6 @@ public final class DynamicEcosystem {
         NETWORK_WRAPPER.registerMessage(SetBiomeMessage.class, SetBiomeMessage.class, id++, Side.CLIENT);
 
         MinecraftForge.EVENT_BUS.register(INSTANCE);
-    }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-
     }
 
     @SubscribeEvent
