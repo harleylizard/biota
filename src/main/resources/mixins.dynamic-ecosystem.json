@@ -1,19 +1,13 @@
 {
   "required": true,
-  "package": "com.harleylizard.ecosystem.mixin",
+  "package": "com.harleylizard.dynamicecosystem.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "BlockDeadBushMixin",
-    "BlockGrassMixin",
-    "BlockLeavesMixin",
-    "BlockMushroomMixin",
-    "BlockSaplingMixin",
-    "BlockTallGrassMixin",
-    "WorldMixin"
+    "WorldServerMixin"
   ],
   "client": [
-    "ClientBlockGrassMixin",
-    "ClientBlockTallGrassMixin"
+    "client.BlockGrassMixin",
+    "client.BlockTallGrassMixin"
   ],
   "injectors": {
     "defaultRequire": 1

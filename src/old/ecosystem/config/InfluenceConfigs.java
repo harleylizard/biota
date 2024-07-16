@@ -113,7 +113,7 @@ public final class InfluenceConfigs {
                 Files.createDirectories(parent);
             }
 
-            URL url = requireNonNull(InfluenceConfigs.class.getClassLoader().getResource(jsonFile));
+            URL url = Objects.requireNonNull(InfluenceConfigs.class.getClassLoader().getResource(jsonFile));
             try (InputStream stream = new BufferedInputStream(url.openStream()); OutputStream out = Files.newOutputStream(path)) {
                 int byteRead;
                 while ((byteRead = stream.read()) != -1) {

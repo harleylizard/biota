@@ -34,7 +34,7 @@ public interface BlockWithMeta extends Comparable<BlockWithMeta>, Predicate<Bloc
     }
 
     static Block of(String name) {
-        return requireNonNull(Block.getBlockFromName(name), "Failed to get block " + name);
+        return Objects.requireNonNull(Block.getBlockFromName(name), "Failed to get block " + name);
     }
 
     final class ImmutableBlockWithMeta implements BlockWithMeta {

@@ -47,6 +47,8 @@ dependencies {
     implementation(files("libs/+unimixins-all-1.7.10-0.1.17-dev.jar"))
     annotationProcessor(files("libs/+unimixins-all-1.7.10-0.1.17-dev.jar"))
 
+    implementation("it.unimi.dsi:fastutil:8.5.13")
+
     // Jitpack isn't working as of typing.
     // implementation("com.github.LegacyModdingMC.UniMixins:unimixins-all-1.7.10:0.1.17:dev")
     // annotationProcessor("com.github.LegacyModdingMC.UniMixins:unimixins-all-1.7.10:0.1.17")
